@@ -1,10 +1,15 @@
-// Grab the axios package...
+//require("dotenv").config();
+var keys = require("./keys.js");
 var axios = require("axios");
 
-// Run the axios.get function...
-// The axios.get function takes in a URL and returns a promise (just like $.ajax)
-axios
-  .get("https://en.wikipedia.org/wiki/Kudos_(granola_bar)")
+var call = process.argv[2];
+var noun = process.argv[3];
+var response;
+
+switch (call){
+  case "concert-this":
+      axios
+  .get("https://rest.bandsintown.com/artists/" + call + "/events?app_id=codingbootcamp")
   .then(function(response) {
     // If the axios was successful...
     // Then log the body from the site!
@@ -27,3 +32,4 @@ axios
     }
     console.log(error.config);
   });
+}
