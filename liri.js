@@ -2,13 +2,17 @@
 var keys = require("./keys.js");
 var axios = require("axios");
 var moment = require("moment");
+var AjaxCalls = require("./AjaxCalls");
 
 var call = process.argv[2];
 var noun = process.argv[3];
-var response;
+var ajaxCalls = new AjaxCalls();
 
 switch (call) {
   case "concert-this":
+    ajaxCalls.callConcert(noun);
+
+  case "spotify-this-song":
     axios
       .get("https://rest.bandsintown.com/artists/" + noun + "/events?app_id=codingbootcamp")
       .then(function (response) {
@@ -16,7 +20,7 @@ switch (call) {
         // Then log the body from the site!
         //console.log(response.data);
         for (var i = 0; i < response.data.length; i++) {
-           console.log("Venue: " + response.data[i].venue.name + " Location: " + response.data[i].venue.city + " Date: " + moment(response.data[i].datetime).format("MM/DD/YYYY"));
+          console.log("Venue: " + response.data[i].venue.name + " Location: " + response.data[i].venue.city + " Date: " + moment(response.data[i].datetime).format("MM/DD/YYYY"));
           // + "location: " + locationName + "Date: " + date)
         }
 
