@@ -57,12 +57,14 @@ var AjaxCalls = function () {
                 }
 
                 var song = [
-                    "Artist(s): " + artist
-                   // "Location: " + response.data[i].venue.city,
-                   // "Venue: " + response.data[i].venue.name,
+                    "Artist(s): " + artist,
+                    "Song name: " + jsonData.name,
+                    "Preview link: " + jsonData.preview_url,
+                    "Album name: " + jsonData.album.name,
                 ].join("\n");
                 
                 console.log(song);
+                //console.log(jsonData);
                 fs.appendFile("log.txt", response + divider, function (err) {
                     if (err) throw err;
                     //console.log(response + "\n\n");
@@ -72,40 +74,6 @@ var AjaxCalls = function () {
                 //console.log(err);
             });
     };
-
-    /*
-        if (!noun) {
-            noun = "The Sign";
-        }
-        spotify.search({
-            type: "track",
-            query: noun,
-            limit: 1
-        }).then(response => {
-            let song = response.tracks.items[0];
-            let artistsArr = song.artists;
-            let artist = artistsArr[0].name;
-            if (artistsArr.length > 1) {
-                for (let i = 1; i < artistsArr.length; i++) {
-                    artist += " & " + artistsArr[i].name
-                }
-            }
-            let results = "\nArtist(s): " + artist + "\nSong Title: " + song.name + "\nPreview URL: " + song.preview_url + "\nAlbum: " + song.album.name
-            console.log(results);
-            logAction("spotify-this-song", noun, results);
-        }).catch(error => {
-            console.log("Could not spotify this song!\n" + error)
-        })
-    }
-     */
-
-
-
-
-
-
-
-
 
 };
 
