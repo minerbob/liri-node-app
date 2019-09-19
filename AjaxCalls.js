@@ -1,14 +1,22 @@
+require("dotenv").config();
+
+
 var axios = require("axios");
 var fs = require("fs");
 var moment = require("moment");
 var AjaxCalls = require("./AjaxCalls");
 
+var keys = require("./keys.js");
+var Spotify = require('node-spotify-api');
+var spotify = new Spotify(keys.spotify);
+
+
 var AjaxCalls = function () {
 
     var divider = "\n------------------------------------------------------------\n\n";
 
-    this.callConcert = function (noun) {
-        var URL = "https://rest.bandsintown.com/artists/" + noun + "/events?app_id=codingbootcamp";
+    this.callConcert = function (concert) {
+        var URL = "https://rest.bandsintown.com/artists/" + concert + "/events?app_id=codingbootcamp";
 
         axios.get(URL).then(function (response) {
             for (var i = 0; i < response.data.length; i++) {
@@ -27,8 +35,79 @@ var AjaxCalls = function () {
             });
         });
 
-        };
     };
 
+    this.spotify_this_song = function (noun) {
 
-        module.exports = AjaxCalls;
+        spotify
+            .search({
+                type: 'track',
+                query: noun,
+                limit: 1
+            })
+            .then(function (response) {
+                // credit Ben for hanlding artists
+                var jsonData = response.tracks.items[0];
+                var artistsArr = jsonData.artists;
+                var artist = artistsArr[0].name;
+                if (artistsArr.length > 1) {
+                    for (let i = 1; i < artistsArr.length; i++) {
+                        artist += " & " + artistsArr[i].name
+                    }
+                }
+
+                var song = [
+                    "Artist(s): " + artist
+                   // "Location: " + response.data[i].venue.city,
+                   // "Venue: " + response.data[i].venue.name,
+                ].join("\n");
+                
+                console.log(song);
+                fs.appendFile("log.txt", response + divider, function (err) {
+                    if (err) throw err;
+                    //console.log(response + "\n\n");
+                });
+            })
+            .catch(function (err) {
+                //console.log(err);
+            });
+    };
+
+    /*
+        if (!noun) {
+            noun = "The Sign";
+        }
+        spotify.search({
+            type: "track",
+            query: noun,
+            limit: 1
+        }).then(response => {
+            let song = response.tracks.items[0];
+            let artistsArr = song.artists;
+            let artist = artistsArr[0].name;
+            if (artistsArr.length > 1) {
+                for (let i = 1; i < artistsArr.length; i++) {
+                    artist += " & " + artistsArr[i].name
+                }
+            }
+            let results = "\nArtist(s): " + artist + "\nSong Title: " + song.name + "\nPreview URL: " + song.preview_url + "\nAlbum: " + song.album.name
+            console.log(results);
+            logAction("spotify-this-song", noun, results);
+        }).catch(error => {
+            console.log("Could not spotify this song!\n" + error)
+        })
+    }
+     */
+
+
+
+
+
+
+
+
+
+};
+
+
+module.exports = AjaxCalls;
